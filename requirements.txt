@@ -1,3 +1,6 @@
 streamlit
 fpdf
 pandas
+matplotlib
+plotly
+fpdf2
