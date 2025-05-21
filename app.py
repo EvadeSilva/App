@@ -119,7 +119,7 @@ if st.button("📋 Generar plan personalizado"):
     pdf.set_draw_color(180, 180, 180)
     pdf.set_fill_color(50, 90, 160)
     pdf.set_text_color(255, 255, 255)
-    pdf.set_font("OpenSans", "B", 12)
+    pdf.set_font("OpenSans", '', 12)
     pdf.cell(200, 10, limpiar_texto("🔥 Tu rutina semanal"), ln=True, fill=True)
     pdf.ln(5)
     pdf.set_text_color(0, 0, 0)
