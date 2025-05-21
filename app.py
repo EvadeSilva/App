@@ -15,9 +15,9 @@ st.header("1. Tu estado actual")
 col1, col2 = st.columns(2)
 with col1:
     edad = st.selectbox("Edad", options=list(range(10, 101)))
-    peso = st.selectbox("Peso (kg)", options=[round(x * 0.5, 1) for x in range(60, 601)])  # 30.0 - 300.0 kg
+    peso = st.selectbox("Peso (kg)", options=[round(x * 0.5, 1) for x in range(60, 601)])
 with col2:
-    altura = st.selectbox("Altura (cm)", options=[round(x * 0.5, 1) for x in range(200, 501)])  # 100.0 - 250.0 cm
+    altura = st.selectbox("Altura (cm)", options=[round(x * 0.5, 1) for x in range(200, 501)])
     nivel = st.selectbox("Nivel de actividad física", ["Sedentario", "Ligero", "Moderado", "Activo", "Muy activo"])
 
 condiciones = st.text_area("¿Tienes alguna condición de salud o lesión a considerar?", placeholder="Ejemplo: asma, rodilla operada...")
@@ -47,12 +47,8 @@ def limpiar_texto(texto):
 
 def generar_tabla_entrenamiento(pdf):
     dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
-
     ejercicios = []
-
     preferencias = tipo_entrenamiento
-
-    # Lógica básica: priorizar lo que el usuario seleccionó
     for i in range(7):
         if "Fuerza" in preferencias:
             ejercicios.append("Fuerza: Sentadillas (3x15), Flexiones (3x12), Peso muerto (3x10)")
@@ -90,66 +86,51 @@ if st.button("📋 Generar mi plan"):
 
     st.subheader("✅ Resultado generado exitosamente")
 
-    # PDF OUTPUT
     pdf = FPDF()
-pdf.set_auto_page_break(auto=True, margin=15)
+    pdf.set_auto_page_break(auto=True, margin=15)
 
-# --- PORTADA ---
-pdf.add_page()
-pdf.set_fill_color(230, 230, 230)
-pdf.rect(0, 0, 210, 297, 'F')
-pdf.set_text_color(0, 51, 102)
-pdf.set_font("Arial", 'B', 22)
-pdf.ln(80)
-pdf.cell(0, 20, limpiar_texto("PLAN PERSONALIZADO DE FITNESS"), ln=True, align='C')
-pdf.set_font("Arial", '', 14)
-pdf.set_text_color(60, 60, 60)
-pdf.cell(0, 10, limpiar_texto(f"Generado para edad {edad} años | Objetivo: {objetivo}"), ln=True, align='C')
-pdf.cell(0, 10, limpiar_texto(f"Fecha: {date.today().strftime('%d/%m/%Y')}"), ln=True, align='C')
-pdf.add_page()
+    pdf.add_page()
+    pdf.set_fill_color(230, 230, 230)
+    pdf.rect(0, 0, 210, 297, 'F')
+    pdf.set_text_color(0, 51, 102)
+    pdf.set_font("Arial", 'B', 22)
+    pdf.ln(80)
+    pdf.cell(0, 20, limpiar_texto("PLAN PERSONALIZADO DE FITNESS"), ln=True, align='C')
+    pdf.set_font("Arial", '', 14)
+    pdf.set_text_color(60, 60, 60)
+    pdf.cell(0, 10, limpiar_texto(f"Generado para edad {edad} años | Objetivo: {objetivo}"), ln=True, align='C')
+    pdf.cell(0, 10, limpiar_texto(f"Fecha: {date.today().strftime('%d/%m/%Y')}"), ln=True, align='C')
+
     pdf.add_page()
     pdf.set_font("Arial", "B", 16)
-pdf.set_fill_color(0, 102, 204)
-pdf.set_text_color(255, 255, 255)
-pdf.cell(200, 12, txt=limpiar_texto("Plan personalizado de fitness"), ln=True, align="C", fill=True)
-pdf.ln(10)
-pdf.set_text_color(0, 0, 0)
-    pdf.cell(200, 10, txt=limpiar_texto("Plan personalizado de fitness"), ln=True, align="C")
+    pdf.set_fill_color(0, 102, 204)
+    pdf.set_text_color(255, 255, 255)
+    pdf.cell(200, 12, txt=limpiar_texto("Plan personalizado de fitness"), ln=True, align="C", fill=True)
     pdf.ln(10)
+    pdf.set_text_color(0, 0, 0)
     pdf.set_font("Arial", size=12)
     pdf.cell(200, 10, txt=limpiar_texto(f"Edad: {edad} | Peso: {peso} kg | Altura: {altura} cm | IMC: {imc:.1f} ({clasificacion})"), ln=True)
     pdf.cell(200, 10, txt=limpiar_texto(f"Objetivo: {objetivo} | Nivel de actividad: {nivel}"), ln=True)
     pdf.ln(10)
-    pdf.set_font("Arial", "B", 12)
+
     pdf.set_draw_color(180, 180, 180)
-pdf.set_fill_color(50, 90, 160)
-pdf.set_text_color(255, 255, 255)
-pdf.set_font("Arial", "B", 12)
-pdf.cell(200, 10, limpiar_texto("Tabla de rutina semanal detallada"), ln=True, fill=True)
-pdf.ln(5)
-pdf.set_text_color(0, 0, 0)
+    pdf.set_fill_color(50, 90, 160)
+    pdf.set_text_color(255, 255, 255)
+    pdf.set_font("Arial", "B", 12)
+    pdf.cell(200, 10, limpiar_texto("Tabla de rutina semanal detallada"), ln=True, fill=True)
     pdf.ln(5)
+    pdf.set_text_color(0, 0, 0)
     generar_tabla_entrenamiento(pdf)
 
-    # Página adicional con cálculo calórico y explicación del IMC
     pdf.add_page()
     pdf.set_font("Arial", "B", 12)
     pdf.cell(200, 10, limpiar_texto("Requerimientos calóricos estimados"), ln=True)
     pdf.set_font("Arial", size=11)
-
-    # Estimación de TMB usando fórmula de Mifflin-St Jeor (para hombres por defecto)
     tmb = 10 * peso + 6.25 * altura - 5 * edad + 5
-    factores = {
-        "Sedentario": 1.2,
-        "Ligero": 1.375,
-        "Moderado": 1.55,
-        "Activo": 1.725,
-        "Muy activo": 1.9
-    }
+    factores = {"Sedentario": 1.2, "Ligero": 1.375, "Moderado": 1.55, "Activo": 1.725, "Muy activo": 1.9}
     factor = factores.get(nivel, 1.55)
     mantenimiento = round(tmb * factor)
     perdida = round(mantenimiento - 500)
-
     pdf.cell(200, 10, limpiar_texto(f"Calorías estimadas para mantener tu peso: {mantenimiento} kcal/día"), ln=True)
     pdf.cell(200, 10, limpiar_texto(f"Calorías estimadas para perder peso: {perdida} kcal/día"), ln=True)
     pdf.ln(10)
@@ -185,9 +166,6 @@ pdf.set_text_color(0, 0, 0)
         pdf.cell(200, 10, limpiar_texto(f"- {item}"), ln=True)
     pdf.ln(10)
 
-    pdf.set_font("Arial", "B", 12)
-    pdf.cell(200, 10, limpiar_texto("¿Qué es el IMC?"), ln=True)
-    pdf.add_page()
     pdf.set_font("Arial", "B", 12)
     pdf.cell(200, 10, limpiar_texto("¿Qué es el IMC?"), ln=True)
     pdf.set_font("Arial", size=11)
