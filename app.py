@@ -78,6 +78,70 @@ def generar_tabla_entrenamiento(pdf):
 # (Aplicadas en cada sección dentro del botón de generación de PDF)
 # Usa OpenSans en todo, colores suaves y líneas divisorias
 
+if st.button("📋 Generar plan personalizado"):
+    st.subheader("📊 Resumen de tu estado")
+    imc, clasificacion = calcular_imc(peso, altura)
+    st.write(f"**Edad:** {edad} años | **Peso:** {peso} kg | **Altura:** {altura} cm")
+    st.write(f"**IMC:** {imc:.1f} ({clasificacion})")
+    st.caption("El IMC es una herramienta estimativa, no diagnóstica. Consulta a un profesional si tienes dudas.")
+    st.write(f"**Nivel de actividad:** {nivel}")
+
+    # Generación del PDF
+    pdf = FPDF()
+    pdf.add_font('OpenSans', '', 'OpenSans-Regular.ttf', uni=True)
+    pdf.set_auto_page_break(auto=True, margin=15)
+    pdf.set_font('OpenSans', size=12)
+
+    pdf.add_page()
+    pdf.set_fill_color(230, 230, 230)
+    pdf.rect(0, 0, 210, 297, 'F')
+    pdf.set_text_color(0, 51, 102)
+    pdf.set_font("OpenSans", 'B', 22)
+    pdf.ln(80)
+    pdf.cell(0, 20, limpiar_texto("PLAN PERSONALIZADO DE FITNESS"), ln=True, align='C')
+    pdf.set_font("OpenSans", '', 14)
+    pdf.set_text_color(60, 60, 60)
+    pdf.cell(0, 10, limpiar_texto(f"Edad: {edad} | Objetivo: {objetivo}"), ln=True, align='C')
+    pdf.cell(0, 10, limpiar_texto(f"Fecha: {date.today().strftime('%d/%m/%Y')}"), ln=True, align='C')
+
+    pdf.add_page()
+    pdf.set_font("OpenSans", "B", 16)
+    pdf.set_fill_color(0, 102, 204)
+    pdf.set_text_color(255, 255, 255)
+    pdf.cell(200, 12, txt=limpiar_texto("Plan personalizado de fitness"), ln=True, align="C", fill=True)
+    pdf.ln(10)
+    pdf.set_text_color(0, 0, 0)
+    pdf.set_font("OpenSans", size=12)
+    pdf.cell(200, 10, txt=limpiar_texto(f"Edad: {edad} | Peso: {peso} kg | Altura: {altura} cm | IMC: {imc:.1f} ({clasificacion})"), ln=True)
+    pdf.cell(200, 10, txt=limpiar_texto(f"Objetivo: {objetivo} | Nivel de actividad: {nivel}"), ln=True)
+    pdf.ln(10)
+
+    pdf.set_draw_color(180, 180, 180)
+    pdf.set_fill_color(50, 90, 160)
+    pdf.set_text_color(255, 255, 255)
+    pdf.set_font("OpenSans", "B", 12)
+    pdf.cell(200, 10, limpiar_texto("🔥 Tu rutina semanal"), ln=True, fill=True)
+    pdf.ln(5)
+    pdf.set_text_color(0, 0, 0)
+    generar_tabla_entrenamiento(pdf)
+
+    nombre_archivo = "plan_fitness.pdf"
+    try:
+        pdf.output(nombre_archivo)
+        with open(nombre_archivo, "rb") as file:
+            st.download_button("📥 Descargar plan en PDF", file, file_name=nombre_archivo)
+        os.remove(nombre_archivo)
+    except Exception as e:
+        st.error(f"Ocurrió un error al generar el PDF: {e}")
+
+# Resto del código ya integra estilo visual y fuente moderna
+# Asegúrate de tener el archivo OpenSans-Regular.ttf en el mismo directorio
+
+
+# --- MEJORAS DE ESTILO GLOBAL ---
+# (Aplicadas en cada sección dentro del botón de generación de PDF)
+# Usa OpenSans en todo, colores suaves y líneas divisorias
+
 # Resto del código ya integra estilo visual y fuente moderna
 # Asegúrate de tener el archivo OpenSans-Regular.ttf en el mismo directorio
 
