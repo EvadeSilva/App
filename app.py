@@ -51,15 +51,16 @@ def agregar_rutina_semanal(pdf):
     ejercicios = []
     preferencias = tipo_entrenamiento
     for i in range(7):
-        if "Fuerza" in preferencias:
+        tipo = preferencias[i % len(preferencias)] if preferencias else "General"
+        if tipo == "Fuerza":
             ejercicios.append("Fuerza: Sentadillas (3x15), Flexiones (3x12), Peso muerto (3x10)")
-        elif "HIIT" in preferencias:
+        elif tipo == "HIIT":
             ejercicios.append("HIIT: 5 rounds - 40s trabajo/20s descanso: burpees, jumping jacks, mountain climbers")
-        elif "Yoga / Movilidad" in preferencias:
+        elif tipo == "Yoga / Movilidad":
             ejercicios.append("Yoga/Movilidad: secuencia básica + estiramientos de espalda y piernas")
-        elif "Funcional" in preferencias:
+        elif tipo == "Funcional":
             ejercicios.append("Funcional: sentadilla + empuje, estocada + curl, plancha con toques (3x12 cada uno)")
-        elif "Cardio" in preferencias:
+        elif tipo == "Cardio":
             ejercicios.append("Cardio: Caminata o bicicleta 30-45 minutos a ritmo moderado")
         else:
             ejercicios.append("Rutina general: Caminata + abdominales + estiramientos")
