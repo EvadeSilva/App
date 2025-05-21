@@ -67,7 +67,7 @@ def generar_tabla_entrenamiento(pdf):
         else:
             ejercicios.append("Rutina general: Caminata + abdominales + estiramientos")
 
-    pdf.set_fill_color(200, 220, 255)(200, 220, 255)
+    pdf.set_fill_color(200, 220, 255)
     pdf.set_font("Arial", "B", 11)
     pdf.cell(40, 10, limpiar_texto("Día"), 1, 0, 'C', 1)
     pdf.cell(150, 10, limpiar_texto("Rutina detallada"), 1, 1, 'C', 1)
@@ -92,8 +92,28 @@ if st.button("📋 Generar mi plan"):
 
     # PDF OUTPUT
     pdf = FPDF()
+pdf.set_auto_page_break(auto=True, margin=15)
+
+# --- PORTADA ---
+pdf.add_page()
+pdf.set_fill_color(230, 230, 230)
+pdf.rect(0, 0, 210, 297, 'F')
+pdf.set_text_color(0, 51, 102)
+pdf.set_font("Arial", 'B', 22)
+pdf.ln(80)
+pdf.cell(0, 20, limpiar_texto("PLAN PERSONALIZADO DE FITNESS"), ln=True, align='C')
+pdf.set_font("Arial", '', 14)
+pdf.set_text_color(60, 60, 60)
+pdf.cell(0, 10, limpiar_texto(f"Generado para edad {edad} años | Objetivo: {objetivo}"), ln=True, align='C')
+pdf.cell(0, 10, limpiar_texto(f"Fecha: {date.today().strftime('%d/%m/%Y')}"), ln=True, align='C')
+pdf.add_page()
     pdf.add_page()
-    pdf.set_font("Arial", "B", 14)
+    pdf.set_font("Arial", "B", 16)
+pdf.set_fill_color(0, 102, 204)
+pdf.set_text_color(255, 255, 255)
+pdf.cell(200, 12, txt=limpiar_texto("Plan personalizado de fitness"), ln=True, align="C", fill=True)
+pdf.ln(10)
+pdf.set_text_color(0, 0, 0)
     pdf.cell(200, 10, txt=limpiar_texto("Plan personalizado de fitness"), ln=True, align="C")
     pdf.ln(10)
     pdf.set_font("Arial", size=12)
@@ -101,7 +121,13 @@ if st.button("📋 Generar mi plan"):
     pdf.cell(200, 10, txt=limpiar_texto(f"Objetivo: {objetivo} | Nivel de actividad: {nivel}"), ln=True)
     pdf.ln(10)
     pdf.set_font("Arial", "B", 12)
-    pdf.cell(200, 10, limpiar_texto("Tabla de rutina semanal detallada"), ln=True)
+    pdf.set_draw_color(180, 180, 180)
+pdf.set_fill_color(50, 90, 160)
+pdf.set_text_color(255, 255, 255)
+pdf.set_font("Arial", "B", 12)
+pdf.cell(200, 10, limpiar_texto("Tabla de rutina semanal detallada"), ln=True, fill=True)
+pdf.ln(5)
+pdf.set_text_color(0, 0, 0)
     pdf.ln(5)
     generar_tabla_entrenamiento(pdf)
 
