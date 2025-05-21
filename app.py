@@ -3,6 +3,7 @@ from datetime import date
 import pandas as pd
 from fpdf import FPDF
 import os
+import matplotlib.pyplot as plt
 
 st.set_page_config(page_title="Fitness Plan Generator", layout="centered")
 
@@ -45,7 +46,74 @@ def calcular_imc(peso, altura):
 def limpiar_texto(texto):
     return texto.encode("latin-1", "replace").decode("latin-1")
 
-def generar_tabla_entrenamiento(pdf):
+def generar_tabla_entrenamiento(pdf)
+
+    # --- NUEVA SECCIÓN: Cálculo calórico y alimentación ---
+    pdf.add_page()
+    pdf.set_font("OpenSans", '', 14)
+    pdf.set_fill_color(0, 102, 204)
+    pdf.set_text_color(255, 255, 255)
+    pdf.cell(200, 10, limpiar_texto("🍽️ Nutrición personalizada"), ln=True, fill=True)
+    pdf.ln(5)
+    pdf.set_text_color(0, 0, 0)
+    pdf.set_font("OpenSans", '', 12)
+
+    tmb = 10 * peso + 6.25 * altura - 5 * edad + 5
+    factores = {"Sedentario": 1.2, "Ligero": 1.375, "Moderado": 1.55, "Activo": 1.725, "Muy activo": 1.9}
+    factor = factores.get(nivel, 1.55)
+    mantenimiento = round(tmb * factor)
+    perdida = round(mantenimiento - 500)
+    pdf.cell(200, 10, limpiar_texto(f"Calorías diarias estimadas para mantener peso: {mantenimiento} kcal"), ln=True)
+    pdf.cell(200, 10, limpiar_texto(f"Calorías estimadas para perder peso: {perdida} kcal"), ln=True)
+
+    pdf.ln(5)
+    pdf.set_font("OpenSans", '', 12)
+    pdf.cell(200, 10, limpiar_texto("🍏 Ejemplo de alimentación diaria"), ln=True)
+    ejemplo = [
+        "Desayuno: Avena con fruta y mantequilla de maní",
+        "Media mañana: Yogurt con semillas",
+        "Almuerzo: Pechuga de pollo, arroz integral, ensalada",
+        "Merienda: Batido de plátano con proteína",
+        "Cena: Tortilla de claras con verduras"
+    ]
+    for comida in ejemplo:
+        pdf.cell(200, 8, limpiar_texto(f"- {comida}"), ln=True)
+
+    # --- IMC explicación ---
+    pdf.ln(5)
+    pdf.set_font("OpenSans", '', 14)
+    pdf.set_fill_color(0, 102, 204)
+    pdf.set_text_color(255, 255, 255)
+    pdf.cell(200, 10, limpiar_texto("📊 ¿Qué es el IMC?"), ln=True, fill=True)
+    pdf.set_text_color(0, 0, 0)
+    pdf.set_font("OpenSans", '', 11)
+    pdf.multi_cell(0, 8, limpiar_texto("El IMC (Índice de Masa Corporal) evalúa la relación entre peso y altura. Es una referencia general, no definitiva."))
+    pdf.ln(2)
+    categorias = [
+        "Menor a 18.5: Bajo peso",
+        "18.5 - 24.9: Peso normal",
+        "25 - 29.9: Sobrepeso",
+        "30 o más: Obesidad"
+    ]
+    for cat in categorias:
+        pdf.cell(200, 8, limpiar_texto(f"- {cat}"), ln=True)
+
+    # --- Consejos generales ---
+    pdf.ln(4)
+    pdf.set_font("OpenSans", '', 14)
+    pdf.set_fill_color(0, 102, 204)
+    pdf.set_text_color(255, 255, 255)
+    pdf.cell(200, 10, limpiar_texto("✅ Recomendaciones generales"), ln=True, fill=True)
+    pdf.set_text_color(0, 0, 0)
+    pdf.set_font("OpenSans", '', 11)
+    consejos = [
+        "Duerme al menos 7-8 horas por noche",
+        "Hidrátate: 2-3 litros de agua al día",
+        "Evita procesados, elige alimentos frescos",
+        "Muévete cada día, aunque no entrenes"
+    ]
+    for c in consejos:
+        pdf.cell(200, 8, limpiar_texto(f"- {c}"), ln=True):
     dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
     ejercicios = []
     preferencias = tipo_entrenamiento
@@ -124,6 +192,36 @@ if st.button("📋 Generar plan personalizado"):
     pdf.ln(5)
     pdf.set_text_color(0, 0, 0)
     generar_tabla_entrenamiento(pdf)
+
+    # --- GRÁFICO DE CALORÍAS ---
+    def generar_grafico_calorias(mantenimiento, perdida, filename="grafico_calorias.png"):
+        etiquetas = ['Mantener peso', 'Perder peso']
+        calorias = [mantenimiento, perdida]
+        colores = ['#4B8BBE', '#E06C75']
+
+        plt.figure(figsize=(5, 3))
+        barras = plt.bar(etiquetas, calorias, color=colores)
+        plt.title("Requerimiento calórico diario")
+        plt.ylabel("Calorías (kcal)")
+        for i, barra in enumerate(barras):
+            plt.text(barra.get_x() + barra.get_width()/2, barra.get_height() + 20, str(calorias[i]), ha='center', fontsize=10)
+        plt.tight_layout()
+        plt.savefig(filename, dpi=150)
+        plt.close()
+        return filename
+
+    # Calorías
+    tmb = 10 * peso + 6.25 * altura - 5 * edad + 5
+    factores = {"Sedentario": 1.2, "Ligero": 1.375, "Moderado": 1.55, "Activo": 1.725, "Muy activo": 1.9}
+    factor = factores.get(nivel, 1.55)
+    mantenimiento = round(tmb * factor)
+    perdida = round(mantenimiento - 500)
+
+    # Insertar gráfico al PDF
+    grafico_path = generar_grafico_calorias(mantenimiento, perdida)
+    pdf.ln(10)
+    pdf.image(grafico_path, x=35, w=140)
+    os.remove(grafico_path)
 
     nombre_archivo = "plan_fitness.pdf"
     try:
