@@ -105,7 +105,7 @@ if st.button("📋 Generar plan personalizado"):
     pdf.cell(0, 10, limpiar_texto(f"Fecha: {date.today().strftime('%d/%m/%Y')}"), ln=True, align='C')
 
     pdf.add_page()
-    pdf.set_font("OpenSans", "B", 16)
+    pdf.set_font("OpenSans", '', 16)
     pdf.set_fill_color(0, 102, 204)
     pdf.set_text_color(255, 255, 255)
     pdf.cell(200, 12, txt=limpiar_texto("Plan personalizado de fitness"), ln=True, align="C", fill=True)
@@ -136,4 +136,3 @@ if st.button("📋 Generar plan personalizado"):
 
 # Resto del código ya integra estilo visual y fuente moderna
 # Asegúrate de tener el archivo OpenSans-Regular.ttf en el mismo directorio
-
