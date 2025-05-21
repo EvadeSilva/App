@@ -46,7 +46,7 @@ def calcular_imc(peso, altura):
 def limpiar_texto(texto):
     return texto.encode("latin-1", "replace").decode("latin-1")
 
-def generar_tabla_entrenamiento(pdf)
+def generar_tabla_entrenamiento(pdf):
 
     # --- NUEVA SECCIÓN: Cálculo calórico y alimentación ---
     pdf.add_page()
@@ -113,7 +113,7 @@ def generar_tabla_entrenamiento(pdf)
         "Muévete cada día, aunque no entrenes"
     ]
     for c in consejos:
-        pdf.cell(200, 8, limpiar_texto(f"- {c}"), ln=True):
+        pdf.cell(200, 8, limpiar_texto(f"- {c}"), ln=True)
     dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
     ejercicios = []
     preferencias = tipo_entrenamiento
