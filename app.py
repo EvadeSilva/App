@@ -47,16 +47,27 @@ def limpiar_texto(texto):
 
 def generar_tabla_entrenamiento(pdf):
     dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
-    ejercicios = [
-        "Cardio: Caminata rápida 30 min + abdominales (3x15 crunches, 3x20 seg plancha)",
-        "Piernas: Sentadillas (3x15), zancadas (3x12 c/pierna), peso muerto (3x12)",
-        "HIIT: 5 rounds de 40 seg trabajo / 20 seg descanso: burpees, jumping jacks, mountain climbers",
-        "Fuerza superior: Flexiones (3x10), remo con bandas (3x12), press de hombro (3x12)",
-        "Movilidad: Estiramientos dinámicos + abdominales (bicicleta 3x20, plank to elbow 3x15)",
-        "Actividad libre: bici 45 min, senderismo, natación suave",
-        "Descanso activo: yoga suave o caminata relajada"
-    ]
-    pdf.set_fill_color(200, 220, 255)
+
+    ejercicios = []
+
+    preferencias = tipo_entrenamiento
+
+    # Lógica básica: priorizar lo que el usuario seleccionó
+    for i in range(7):
+        if "Fuerza" in preferencias:
+            ejercicios.append("Fuerza: Sentadillas (3x15), Flexiones (3x12), Peso muerto (3x10)")
+        elif "HIIT" in preferencias:
+            ejercicios.append("HIIT: 5 rounds - 40s trabajo/20s descanso: burpees, jumping jacks, mountain climbers")
+        elif "Yoga / Movilidad" in preferencias:
+            ejercicios.append("Yoga/Movilidad: secuencia básica + estiramientos de espalda y piernas")
+        elif "Funcional" in preferencias:
+            ejercicios.append("Funcional: sentadilla + empuje, estocada + curl, plancha con toques (3x12 cada uno)")
+        elif "Cardio" in preferencias:
+            ejercicios.append("Cardio: Caminata o bicicleta 30-45 minutos a ritmo moderado")
+        else:
+            ejercicios.append("Rutina general: Caminata + abdominales + estiramientos")
+
+    pdf.set_fill_color(200, 220, 255)(200, 220, 255)
     pdf.set_font("Arial", "B", 11)
     pdf.cell(40, 10, limpiar_texto("Día"), 1, 0, 'C', 1)
     pdf.cell(150, 10, limpiar_texto("Rutina detallada"), 1, 1, 'C', 1)
@@ -94,7 +105,62 @@ if st.button("📋 Generar mi plan"):
     pdf.ln(5)
     generar_tabla_entrenamiento(pdf)
 
-    # Página adicional con explicación del IMC
+    # Página adicional con cálculo calórico y explicación del IMC
+    pdf.add_page()
+    pdf.set_font("Arial", "B", 12)
+    pdf.cell(200, 10, limpiar_texto("Requerimientos calóricos estimados"), ln=True)
+    pdf.set_font("Arial", size=11)
+
+    # Estimación de TMB usando fórmula de Mifflin-St Jeor (para hombres por defecto)
+    tmb = 10 * peso + 6.25 * altura - 5 * edad + 5
+    factores = {
+        "Sedentario": 1.2,
+        "Ligero": 1.375,
+        "Moderado": 1.55,
+        "Activo": 1.725,
+        "Muy activo": 1.9
+    }
+    factor = factores.get(nivel, 1.55)
+    mantenimiento = round(tmb * factor)
+    perdida = round(mantenimiento - 500)
+
+    pdf.cell(200, 10, limpiar_texto(f"Calorías estimadas para mantener tu peso: {mantenimiento} kcal/día"), ln=True)
+    pdf.cell(200, 10, limpiar_texto(f"Calorías estimadas para perder peso: {perdida} kcal/día"), ln=True)
+    pdf.ln(10)
+
+    pdf.set_font("Arial", "B", 12)
+    pdf.cell(200, 10, limpiar_texto("Ejemplo de alimentación para 1 día"), ln=True)
+    pdf.set_font("Arial", size=11)
+    if objetivo == "Perder grasa":
+        ejemplo = [
+            "Desayuno: Avena cocida con fruta y una cucharada de mantequilla de maní",
+            "Media mañana: Yogurt natural con semillas",
+            "Almuerzo: Pechuga de pollo, arroz integral, ensalada con aceite de oliva",
+            "Merienda: Batido de proteína con plátano",
+            "Cena: Tortilla de claras con verduras y palta"
+        ]
+    elif objetivo == "Ganar músculo":
+        ejemplo = [
+            "Desayuno: Pan integral con huevos, fruta y leche",
+            "Media mañana: Batido de avena, plátano y proteína",
+            "Almuerzo: Carne magra, papas cocidas y verduras",
+            "Merienda: Yogurt griego con nueces",
+            "Cena: Arroz con atún, palta y huevo duro"
+        ]
+    else:
+        ejemplo = [
+            "Desayuno: Pan integral con queso y fruta",
+            "Media mañana: Frutos secos y yogurt",
+            "Almuerzo: Pollo al horno con ensalada y quinoa",
+            "Merienda: Fruta con mantequilla de maní",
+            "Cena: Omelette de verduras y ensalada"
+        ]
+    for item in ejemplo:
+        pdf.cell(200, 10, limpiar_texto(f"- {item}"), ln=True)
+    pdf.ln(10)
+
+    pdf.set_font("Arial", "B", 12)
+    pdf.cell(200, 10, limpiar_texto("¿Qué es el IMC?"), ln=True)
     pdf.add_page()
     pdf.set_font("Arial", "B", 12)
     pdf.cell(200, 10, limpiar_texto("¿Qué es el IMC?"), ln=True)
