@@ -64,7 +64,7 @@ def generar_tabla_entrenamiento(pdf):
             ejercicios.append("Rutina general: Caminata + abdominales + estiramientos")
 
     pdf.set_fill_color(200, 220, 255)
-    pdf.set_font("Arial", "B", 11)
+    pdf.set_font("OpenSans", "B", 11)
     pdf.cell(40, 10, limpiar_texto("Día"), 1, 0, 'C', 1)
     pdf.cell(150, 10, limpiar_texto("Rutina detallada"), 1, 1, 'C', 1)
     pdf.set_font("Arial", size=10)
@@ -87,6 +87,8 @@ if st.button("📋 Generar mi plan"):
     st.subheader("✅ Resultado generado exitosamente")
 
     pdf = FPDF()
+pdf.add_font('OpenSans', '', 'OpenSans-Regular.ttf', uni=True)
+pdf.set_font('OpenSans', size=12)
     pdf.set_auto_page_break(auto=True, margin=15)
 
     pdf.add_page()
@@ -203,3 +205,4 @@ if st.button("📋 Generar mi plan"):
         os.remove(nombre_archivo)
     except Exception as e:
         st.error(f"Ocurrió un error al generar el PDF: {e}")
+
