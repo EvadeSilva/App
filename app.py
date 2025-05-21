@@ -66,7 +66,7 @@ def generar_tabla_entrenamiento(pdf):
     pdf.set_fill_color(240, 244, 255)
     pdf.set_text_color(40, 40, 40)
     pdf.set_draw_color(200, 200, 200)
-    pdf.set_font("OpenSans", "B", 11)
+    pdf.set_font("OpenSans", '', 11)
     pdf.cell(40, 10, limpiar_texto("Día"), 1, 0, 'C', 1)
     pdf.cell(150, 10, limpiar_texto("Rutina detallada"), 1, 1, 'C', 1)
     pdf.set_font("OpenSans", size=10)
@@ -96,7 +96,7 @@ if st.button("📋 Generar plan personalizado"):
     pdf.set_fill_color(230, 230, 230)
     pdf.rect(0, 0, 210, 297, 'F')
     pdf.set_text_color(0, 51, 102)
-    pdf.set_font("OpenSans", 'B', 22)
+    pdf.set_font("OpenSans", '', 22)
     pdf.ln(80)
     pdf.cell(0, 20, limpiar_texto("PLAN PERSONALIZADO DE FITNESS"), ln=True, align='C')
     pdf.set_font("OpenSans", '', 14)
@@ -133,14 +133,6 @@ if st.button("📋 Generar plan personalizado"):
         os.remove(nombre_archivo)
     except Exception as e:
         st.error(f"Ocurrió un error al generar el PDF: {e}")
-
-# Resto del código ya integra estilo visual y fuente moderna
-# Asegúrate de tener el archivo OpenSans-Regular.ttf en el mismo directorio
-
-
-# --- MEJORAS DE ESTILO GLOBAL ---
-# (Aplicadas en cada sección dentro del botón de generación de PDF)
-# Usa OpenSans en todo, colores suaves y líneas divisorias
 
 # Resto del código ya integra estilo visual y fuente moderna
 # Asegúrate de tener el archivo OpenSans-Regular.ttf en el mismo directorio
