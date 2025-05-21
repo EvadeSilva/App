@@ -73,9 +73,7 @@ def agregar_rutina_semanal(pdf):
     pdf.set_font("OpenSans", size=10)
     for dia, ejercicio in zip(dias, ejercicios):
         pdf.cell(40, 10, limpiar_texto(dia), 1, 0, 'C')
-        pdf.multi_cell(150, 10, limpiar_texto(ejercicio), 1)
-
-        pdf.multi_cell(150, 10, limpiar_texto(ejercicio), 1)
+        pdf.cell(150, 10, limpiar_texto(ejercicio), 1, 1)
 
 # --- MEJORAS DE ESTILO GLOBAL ---
 # (Aplicadas en cada sección dentro del botón de generación de PDF)
@@ -152,6 +150,25 @@ if st.button("📋 Generar plan personalizado"):
     mantenimiento = round(tmb * factor)
     perdida = round(mantenimiento - 500)
 
+    # --- SECCIÓN EXPLICATIVA DEL IMC ---
+    pdf.ln(5)
+    pdf.set_font("OpenSans", '', 14)
+    pdf.set_fill_color(0, 102, 204)
+    pdf.set_text_color(255, 255, 255)
+    pdf.cell(200, 10, limpiar_texto("📊 ¿Qué es el IMC?"), ln=True, fill=True)
+    pdf.set_text_color(0, 0, 0)
+    pdf.set_font("OpenSans", '', 11)
+    pdf.multi_cell(0, 8, limpiar_texto("El IMC (Índice de Masa Corporal) evalúa la relación entre peso y altura. Aunque es una guía útil, no sustituye la valoración profesional."))
+    pdf.ln(2)
+    categorias = [
+        "Menor a 18.5: Bajo peso",
+        "18.5 - 24.9: Peso normal",
+        "25 - 29.9: Sobrepeso",
+        "30 o más: Obesidad"
+    ]
+    for cat in categorias:
+        pdf.cell(200, 8, limpiar_texto(f"- {cat}"), ln=True)
+
     # Insertar gráfico al PDF
     grafico_path = generar_grafico_calorias(mantenimiento, perdida)
     pdf.ln(10)
@@ -169,6 +186,3 @@ if st.button("📋 Generar plan personalizado"):
 
 # Resto del código ya integra estilo visual y fuente moderna
 # Asegúrate de tener el archivo OpenSans-Regular.ttf en el mismo directorio
-
-
-
