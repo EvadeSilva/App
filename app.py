@@ -46,74 +46,7 @@ def calcular_imc(peso, altura):
 def limpiar_texto(texto):
     return texto.encode("latin-1", "replace").decode("latin-1")
 
-def generar_tabla_entrenamiento(pdf):
-
-    # --- NUEVA SECCIÓN: Cálculo calórico y alimentación ---
-    pdf.add_page()
-    pdf.set_font("OpenSans", '', 14)
-    pdf.set_fill_color(0, 102, 204)
-    pdf.set_text_color(255, 255, 255)
-    pdf.cell(200, 10, limpiar_texto("🍽️ Nutrición personalizada"), ln=True, fill=True)
-    pdf.ln(5)
-    pdf.set_text_color(0, 0, 0)
-    pdf.set_font("OpenSans", '', 12)
-
-    tmb = 10 * peso + 6.25 * altura - 5 * edad + 5
-    factores = {"Sedentario": 1.2, "Ligero": 1.375, "Moderado": 1.55, "Activo": 1.725, "Muy activo": 1.9}
-    factor = factores.get(nivel, 1.55)
-    mantenimiento = round(tmb * factor)
-    perdida = round(mantenimiento - 500)
-    pdf.cell(200, 10, limpiar_texto(f"Calorías diarias estimadas para mantener peso: {mantenimiento} kcal"), ln=True)
-    pdf.cell(200, 10, limpiar_texto(f"Calorías estimadas para perder peso: {perdida} kcal"), ln=True)
-
-    pdf.ln(5)
-    pdf.set_font("OpenSans", '', 12)
-    pdf.cell(200, 10, limpiar_texto("🍏 Ejemplo de alimentación diaria"), ln=True)
-    ejemplo = [
-        "Desayuno: Avena con fruta y mantequilla de maní",
-        "Media mañana: Yogurt con semillas",
-        "Almuerzo: Pechuga de pollo, arroz integral, ensalada",
-        "Merienda: Batido de plátano con proteína",
-        "Cena: Tortilla de claras con verduras"
-    ]
-    for comida in ejemplo:
-        pdf.cell(200, 8, limpiar_texto(f"- {comida}"), ln=True)
-
-    # --- IMC explicación ---
-    pdf.ln(5)
-    pdf.set_font("OpenSans", '', 14)
-    pdf.set_fill_color(0, 102, 204)
-    pdf.set_text_color(255, 255, 255)
-    pdf.cell(200, 10, limpiar_texto("📊 ¿Qué es el IMC?"), ln=True, fill=True)
-    pdf.set_text_color(0, 0, 0)
-    pdf.set_font("OpenSans", '', 11)
-    pdf.multi_cell(0, 8, limpiar_texto("El IMC (Índice de Masa Corporal) evalúa la relación entre peso y altura. Es una referencia general, no definitiva."))
-    pdf.ln(2)
-    categorias = [
-        "Menor a 18.5: Bajo peso",
-        "18.5 - 24.9: Peso normal",
-        "25 - 29.9: Sobrepeso",
-        "30 o más: Obesidad"
-    ]
-    for cat in categorias:
-        pdf.cell(200, 8, limpiar_texto(f"- {cat}"), ln=True)
-
-    # --- Consejos generales ---
-    pdf.ln(4)
-    pdf.set_font("OpenSans", '', 14)
-    pdf.set_fill_color(0, 102, 204)
-    pdf.set_text_color(255, 255, 255)
-    pdf.cell(200, 10, limpiar_texto("✅ Recomendaciones generales"), ln=True, fill=True)
-    pdf.set_text_color(0, 0, 0)
-    pdf.set_font("OpenSans", '', 11)
-    consejos = [
-        "Duerme al menos 7-8 horas por noche",
-        "Hidrátate: 2-3 litros de agua al día",
-        "Evita procesados, elige alimentos frescos",
-        "Muévete cada día, aunque no entrenes"
-    ]
-    for c in consejos:
-        pdf.cell(200, 8, limpiar_texto(f"- {c}"), ln=True)
+def agregar_rutina_semanal(pdf):
     dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
     ejercicios = []
     preferencias = tipo_entrenamiento
@@ -140,6 +73,8 @@ def generar_tabla_entrenamiento(pdf):
     pdf.set_font("OpenSans", size=10)
     for dia, ejercicio in zip(dias, ejercicios):
         pdf.cell(40, 10, limpiar_texto(dia), 1, 0, 'C')
+        pdf.multi_cell(150, 10, limpiar_texto(ejercicio), 1)
+
         pdf.multi_cell(150, 10, limpiar_texto(ejercicio), 1)
 
 # --- MEJORAS DE ESTILO GLOBAL ---
@@ -191,7 +126,7 @@ if st.button("📋 Generar plan personalizado"):
     pdf.cell(200, 10, limpiar_texto("🔥 Tu rutina semanal"), ln=True, fill=True)
     pdf.ln(5)
     pdf.set_text_color(0, 0, 0)
-    generar_tabla_entrenamiento(pdf)
+    agregar_rutina_semanal(pdf)
 
     # --- GRÁFICO DE CALORÍAS ---
     def generar_grafico_calorias(mantenimiento, perdida, filename="grafico_calorias.png"):
@@ -234,3 +169,6 @@ if st.button("📋 Generar plan personalizado"):
 
 # Resto del código ya integra estilo visual y fuente moderna
 # Asegúrate de tener el archivo OpenSans-Regular.ttf en el mismo directorio
+
+
+
